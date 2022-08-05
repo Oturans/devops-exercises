@@ -1,5 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# We dont care about non alphanumerics filenames so we just ls | grep to shorten the script.
-
-echo $(( $(ls -R ./exercises/ | grep ".*md" -c) + $(grep \</summary\> -c README.md) ))
+echo $(( $(grep -E "\[Exercise\]|</summary>" -c README.md topics/*/README.md | awk -F: '{ s+=$2 } END { print s }' )))
