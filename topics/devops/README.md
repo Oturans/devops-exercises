@@ -1,4 +1,8 @@
-## DevOps
+# DevOps
+
+## Questions
+
+### General 
 
 <details>
 <summary>What is DevOps?</summary><br><b>
@@ -69,7 +73,7 @@ A couple of thoughts:
 3. You might want to set a possibly better goal such as "be able to deploy whenever we need to deploy"
 </b></details>
 
-#### Tooling
+### Tooling
 
 <details>
 <summary>What do you take into consideration when choosing a tool/technology?</summary><br><b>
@@ -120,7 +124,7 @@ Things to think about:
 * What does the switch from one platform to another will require from the organization? For example, training users who use the platform? How much time the team has to invest in such move?
 </b></details>
 
-#### Version Control
+### Version Control
 
 <details>
 <summary>What is Version Control?</summary><br><b>
@@ -179,7 +183,7 @@ to a server will result in a new server instead of updating it. Terraform is an 
 which follows the immutable infrastructure paradigm.
 </b></details>
 
-#### Software Distribution
+### Software Distribution
 
 <details>
 <summary>Explain "Software Distribution"</summary><br><b>
@@ -414,12 +418,44 @@ Note: cross-dependency is when you have two or more changes to separate projects
 <summary>What is Distributed Tracing?</summary><br><b>
 </b></details>
 
+### GitOps
+
 <details>
 <summary>What is GitOps?</summary><br><b>
 
 GitLab: "GitOps is an operational framework that takes DevOps best practices used for application development such as version control, collaboration, compliance, and CI/CD tooling, and applies them to infrastructure automation".
 
 Read more [here](https://about.gitlab.com/topics/gitops)
+</b></details>
+
+<details>
+<summary>What are some of the advantages of applying GitOps?</summary><br><b>
+
+* It introduces limited/granular access to infrastructure
+* It makes it easier to trace who makes changes to infrastructure
+
+</b></details>
+
+<details>
+<summary>When a repository refereed to as "GitOps Repository" what does it means?</summary><br><b>
+
+A repository that doesn't holds the application source code, but the configuration, infra, ... files that required to test and deploy the application.
+</b></details>
+
+<details>
+<summary>What are some practical implementations or practices of GitOp?</summary><br><b>
+
+* Store Infra files in a version control repository (like Git)
+* Apply review/approval process for changes
+</b></details>
+
+<details>
+<summary>Two engineers in your team argue on where to put the configuration and infra related files of a certain application. One of them suggests to put it in the same repo as the application repository and the other one suggests to put to put it in its own separate repository. What's your take on that?</summary><br><b>
+
+One might say we need more details as to what these configuration and infra files look like exactly and how complex the application and its CI/CD pipeline(s), but in general, most of the time you will want to put configuration and infra related files in their own separate repository and not in the repository of the application for multiple reasons:
+
+* Every change submitted to the configuration, shouldn't trigger the CI/CD of the application, it should be testing out and applying the modified configuration, not the application itself
+* When you mix application code with conifguration and infra related files
 </b></details>
 
 #### SRE

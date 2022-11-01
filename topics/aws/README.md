@@ -1,12 +1,14 @@
 # AWS
 
-**Note**: Provided solutions are using the AWS console. It's recommended you'll use IaC technologies to solve the exercises (e.g. Terraform, Pulumi).<br>
-**2nd Note**: Some of the exercises cost money and can't be performed using the free tier/resources
+**Note**: Some of the exercises <b>cost $$$</b> and can't be performed using the free tier/resources
+
+**2nd Note**: Provided solutions are using the AWS console. It's recommended you'll use IaC technologies to solve the exercises (e.g. Terraform, Pulumi).<br>
 
 - [AWS](#aws)
   - [Exercises](#exercises)
     - [IAM](#iam)
     - [EC2](#ec2)
+    - [S3](#s3)
     - [ELB](#elb)
     - [Auto Scaling Groups](#auto-scaling-groups)
     - [VPC](#vpc)
@@ -15,6 +17,8 @@
     - [Containers](#containers)
     - [Lambda](#lambda)
     - [Elastic Beanstalk](#elastic-beanstalk)
+    - [CodePipeline](#codepipeline)
+    - [CDK](#cdk)
     - [Misc](#misc)
   - [Questions](#questions)
     - [Global Infrastructure](#global-infrastructure)
@@ -28,36 +32,45 @@
       - [Launch Template](#launch-template)
       - [ENI](#eni)
       - [Placement Groups](#placement-groups)
+    - [VPC](#vpc-1)
+      - [Default VPC](#default-vpc)
     - [Lambda](#lambda-1)
     - [Containers](#containers-1)
       - [ECS](#ecs)
       - [Fargate](#fargate)
-    - [S3](#s3)
+    - [S3](#s3-1)
       - [Basics](#basics)
-      - [Buckets](#buckets)
-      - [Security](#security)
+      - [Buckets 101](#buckets-101)
+      - [Objects](#objects)
+      - [S3 Security](#s3-security)
+      - [Misc](#misc-1)
     - [Disaster Recovery](#disaster-recovery)
     - [CloudFront](#cloudfront)
     - [ELB](#elb-1)
+      - [NLB](#nlb)
+      - [ALB](#alb)
     - [Auto Scaling Group](#auto-scaling-group)
-    - [Security](#security-1)
+    - [Security](#security)
     - [Databases](#databases-1)
       - [RDS](#rds)
       - [Aurora](#aurora)
       - [DynamoDB](#dynamodb)
       - [ElastiCache](#elasticache)
       - [RedShift](#redshift)
-    - [VPC](#vpc-1)
     - [Identify the Service](#identify-the-service)
     - [DNS (Route 53)](#dns-route-53)
+    - [SQS](#sqs)
+    - [SNS](#sns)
     - [Monitoring and Logging](#monitoring-and-logging)
     - [Billing and Support](#billing-and-support)
+      - [AWS Organizations](#aws-organizations)
     - [Automation](#automation)
-    - [Misc](#misc-1)
+    - [Misc](#misc-2)
     - [High Availability](#high-availability)
     - [Production Operations and Migrations](#production-operations-and-migrations)
     - [Scenarios](#scenarios)
     - [Architecture Design](#architecture-design)
+    - [Misc](#misc-3)
 
 ## Exercises
 
@@ -88,6 +101,12 @@
 | Create an AMI | EC2, AMI | [Exercise](exercises/create_ami/exercise.md) | [Solution](exercises/create_ami/solution.md) | |
 | Create EFS | EC2, EFS | [Exercise](exercises/create_efs/exercise.md) | [Solution](exercises/create_efs/solution.md) | |
 
+### S3
+
+|Name|Topic|Objective & Instructions|Solution|Comments|
+|--------|--------|------|----|----|
+| Create buckets | S3 | [Exercise](exercises/s3/new_bucket/exercise.md) | [Solution](exercises/s3/new_bucket/solution.md)
+| Bucket Lifecycle Policy | S3, Lifecycle Policy |  | 
 ### ELB
 
 |Name|Topic|Objective & Instructions|Solution|Comments|
@@ -139,6 +158,7 @@ Failover | Route 53 | [Exercise](exercises/route_53_failover/exercise.md) | [Sol
 |--------|--------|------|----|----|
 | Hello Function | Lambda | [Exercise](exercises/hello_function/exercise.md) | [Solution](exercises/hello_function/solution.md) | |
 | URL Function | Lambda | [Exercise](exercises/url_function/exercise.md) | [Solution](exercises/url_function/solution.md) | |
+| Web App with DB | Lambda, DynamoDB | [Exercise](exercises/web_app_dynamodb/exercise.md) | [Solution](exercises/web_app_dynamodb/solution.md) | |
 
 ### Elastic Beanstalk
 
@@ -146,6 +166,17 @@ Failover | Route 53 | [Exercise](exercises/route_53_failover/exercise.md) | [Sol
 |--------|--------|------|----|----|
 | Simple Elastic Beanstalk Node.js app | Elastic Beanstalk | [Exercise](exercises/elastic_beanstalk_simple/exercise.md) | [Solution](exercises/elastic_beanstalk_simple/solution.md) | |
 
+### CodePipeline
+
+|Name|Topic|Objective & Instructions|Solution|Comments|
+|--------|--------|------|----|----|
+| Basic CI with S3 | CodePipeline & S3 | [Exercise](exercises/basic_s3_ci/exercise.md) | [Solution](exercises/basic_s3_ci/solution.md) | |
+
+### CDK
+
+|Name|Topic|Objective & Instructions|Solution|Comments|
+|--------|--------|------|----|----|
+| Sample CDK | CDK | [Exercise](exercises/sample_cdk/exercise.md) | [Solution](exercises/sample_cdk/solution.md) | |
 ### Misc
 
 |Name|Topic|Objective & Instructions|Solution|Comments|
@@ -328,6 +359,11 @@ This policy permits to perform any action on any resource. It happens to be the 
 IAM Access Advisor
 </b></details>
 
+<details>
+<summary>What type of IAM object would you use to allow inter-service communication?</summary><br><b>
+
+Role
+</b></details>
 ### EC2
 
 <details>
@@ -990,6 +1026,185 @@ Pros:
   * Maximized high availability (instances on different hardware, span across AZs)
 </b></details>
 
+### VPC
+
+<details>
+<summary>What is VPC?</summary><br><b>
+
+"A logically isolated section of the AWS cloud where you can launch AWS resources in a virtual network that you define"
+Read more about it [here](https://aws.amazon.com/vpc).
+</b></details>
+
+<details>
+<summary>True or False? VPC spans multiple regions</summary><br><b>
+
+False
+</b></details>
+
+<details>
+<summary>True or False? It's possible to have multiple VPCs in one region</summary><br><b>
+
+True. As of today, the soft limit is 5.
+</b></details>
+
+<details>
+<summary>True or False? Subnets belong to the same VPC, can be in different availability zones</summary><br><b>
+
+True. Just to clarify, a single subnet resides entirely in one AZ.
+</b></details>
+
+<details>
+<summary>You have noticed your VPC's subnets (which use x.x.x.x/20 CIDR) have 4096 available IP addresses although this CIDR should have 4096 addresses. What is the reason for that?</summary><br><b>
+
+AWS reserves 5 IP addresses in each subnet - first 4 and the last one, and so they aren't available for use.
+</b></details>
+
+<details>
+<summary>What AWS uses the 5 reserved IP addresses for?</summary><br><b>
+
+x.x.x.0 - network address
+x.x.x.1 - VPC router
+x.x.x.2 - DNS mapping
+x.x.x.3 - future use
+x.x.x.255 - broadcast address
+</b></details>
+
+<details>
+<summary>What is an Internet Gateway?</summary><br><b>
+
+[AWS Docs](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html): "component that allows communication between instances in your VPC and the internet"
+
+In addition it's good to know that IGW is:
+  * Highly available and redundant
+  * Not porivding internet access by its own (you need route tables to be edited)
+  * Created separately from VPC
+</b></details>
+
+<details>
+<summary>True or False? One or more VPCs can be attached to one Internet Gateway</summary><br><b>
+
+False. Only one VPC can be attached to one IGW and vice versa
+</b></details>
+
+<details>
+<summary>True or False? NACL allow or deny traffic on the subnet level</summary><br><b>
+
+True
+</b></details>
+
+<details>
+<summary>What is VPC peering?</summary><br><b>
+
+[docs.aws](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html): "A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses."
+</b></details>
+
+<details>
+<summary>True or False? Multiple Internet Gateways can be attached to one VPC</summary><br><b>
+
+False. Only one internet gateway can be attached to a single VPC.
+</b></details>
+
+<details>
+<summary>You've restarted your EC2 instance and the public IP has changed. How would you deal with it so it won't happen?</summary><br><b>
+
+Use Elastic IP which provides you a fixed IP address.
+</b></details>
+
+<details>
+<summary>When creating a new VPC, there is an option called "Tenancy". What is it used for?</summary><br><b>
+</b></details>
+
+<details>
+<summary>What is an Elastic IP address?</summary><br><b>
+
+[AWS Docs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html): "An Elastic IP address is a static IPv4 address designed for dynamic cloud computing. An Elastic IP address is allocated to your AWS account, and is yours until you release it. By using an Elastic IP address, you can mask the failure of an instance or software by rapidly remapping the address to another instance in your account."
+</b></details>
+
+<details>
+<summary>Why would you use an Elastic IP address?</summary><br><b>
+
+Let's say you have an instance that you need to shutdown or perform some maintenance on. In that case, what you would want to do is to move the Elastic IP address to another instance that is operational, until you finish to perform the maintenance and then you can move it back to the original instance (or keep it assigned to the second one).
+</b></details>
+
+<details>
+<summary>True or False? When stopping and starting an EC2 instance, its public IP changes</summary><br><b>
+
+True
+</b></details>
+
+<details>
+<summary>What are the best practices around Elastic IP?</summary><br><b>
+
+The best practice is actually not using them in the first place. It's more common to use a load balancer without a public IP or use a random public IP and register a DNS record to it
+</b></details>
+
+<details>
+<summary>True or False? An Elastic IP is free, as long it's not associated with an EC2 instance</summary><br><b>
+
+False. An Elastic IP is free of charge as long as **it is ** associated with an EC2 instance. This instance should be running and should have only one Elastic IP.
+</b></details>
+
+<details>
+<summary>True or False? Route Tables used to allow or deny traffic from the internet to AWS instances</summary><br><b>
+
+False.
+</b></details>
+
+<details>
+<summary>Explain Security Groups and Network ACLs</summary><br><b>
+
+* NACL - security layer on the subnet level.
+* Security Group - security layer on the instance level.
+
+Read more about it [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html) and [here](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
+</b></details>
+
+<details>
+<summary>What is AWS Direct Connect?</summary><br><b>
+
+Allows you to connect your corporate network to AWS network.
+</b></details>
+
+<details>
+<summary>What would you use if you need a fixed public IP for your EC2 instance?</summary><br><b>
+
+Elastic IP
+</b></details>
+
+<details>
+<summary>Kratos, your colleague, decided to use a subnet of /27 because he needs 29 IP addresses for EC2 instances. Is Kratos right?</summary><br><b>
+
+No. Since AWS reserves 5 IP addresses for every subnet, Kratos will have 32-5=27 addresses and this is less than what he needs (29).
+
+It's better if Kratos uses a subnet of size /26 but good luck telling him that.
+</b></details>
+
+#### Default VPC
+
+<details>
+<summary>True or False? By default, any new account has a default VPC</summary><br><b>
+
+True.
+</b></details>
+
+<details>
+<summary>True or False? Default VPC doesn't have internet connectivity and any launched EC2 will only have a private IP assigned</summary><br><b>
+
+False. The default VPC has internet connectivity and any launched EC2 instance gets a public IPv4 address.
+
+In addition, any launched EC2 instance gets a public and private DNS names.
+</b></details>
+
+<details>
+<summary>Which of the following is included with default VPC?
+
+* Internet gateway connected to the default VPC
+* A route to main route table that points all traffic to internet gateway
+* Default public subnet
+* Default /16 IPv4 CIDR block</summary><br><b>
+
+All of them :)
+</b></details>
 ### Lambda
 
 <details>
@@ -1003,24 +1218,54 @@ Read more on it [here](https://aws.amazon.com/lambda)
 <details>
 <summary>True or False? In AWS Lambda, you are charged as long as a function exists, regardless of whether it's running or not</summary><br><b>
 
-False. Charges are being made when the code is executed.
+False. Charges are being made when the function is executed for the time it takes to execute and compute resources it uses.
 </b></details>
 
 <details>
 <summary>Which of the following set of languages Lambda supports?
 
 - R, Swift, Rust, Kotlin
-- Python, Ruby, Go
-- Python, Ruby, PHP
+- Python, Ruby, Go, Kotlin, Bash
+- Python, Ruby, PHP, PowerShell, C#, Perl
+- Python, Ruby, Go, Node.js, Groovy, C++
+- Python, Ruby, Go, Node.js, PowerShell, C#
 </summary><br><b>
 
-- Python, Ruby, Go
+- Python, Ruby, Go, Node.js, PowerShell, C#
 </b></details>
 
 <details>
 <summary>True or False? Basic lambda permissions allow you only to upload logs to Amazon CloudWatch Logs</summary><br><b>
 
 True
+</b></details>
+
+<details>
+<summary>What's one of the issues with the current architecture?
+
+<img src="images/lambda/aws_lambda_direct_access.png"/>
+</summary><br><b>
+
+Users shouldn't access directly AWS Lambda directly. If you'd to like to expose your Lambda function to users a better approach would be to set up API Gateway endpoint between the users and the Lambda function.
+
+This not only provides enhanced security but also easier access for the user where he can use HTTP or HTTPS for accessing the function.
+</b></details>
+
+<details>
+<summary>Specify one or more use cases for using AWS Lambda</summary><br><b>
+
+- Uploading images to S3 and tagging them or inserting information on the images to a database
+- Uploading videos to S3 and edit them or add subtitles/captions to them and store the result in S3
+- Use SNS and/or SQS to trigger functions based on notifications or messages receieved from these services.
+- Cron Jobs: Use Lambda together with CloudWatch events to schedule tasks/functions periodically.
+</b></details>
+
+<details>
+<summary>You run an architecture where you have a Lambda function that uploads images to S3 bucket and stores information on the images in DynamoDB. You would like to expose the function to users so they can invoke it. Your friend Carlos suggests you expose the credentials to the Lambda function. What's your take on that?</summary><br><b>
+
+That's a big no. You shouldn't let users direct access to your Lambda function.
+
+The way to go here and expose the Lambda function to users is to to an API Gateway endpoint.
 </b></details>
 
 ### Containers
@@ -1107,6 +1352,8 @@ True.
 - As a user you don't have to worry about filesystems or disk space
 </b></details>
 
+#### Buckets 101
+
 <details>
 <summary>What is a bucket?</summary><br><b>
 
@@ -1114,22 +1361,68 @@ An S3 bucket is a resource which is similar to folders in a file system and allo
 </b></details>
 
 <details>
-<summary>Explain folders and objects in regards to buckets</summary><br><b>
+<summary>True or False? Buckets are defined globally</summary><br><b>
 
-* Folder - any sub folder in an s3 bucket
-* Object - The files which are stored in a bucket
+False. They are defined at the region level.
+</b></details>
+
+<details>
+<summary>True or False? A bucket name must be globally unique</summary><br><b>
+
+True
+</b></details>
+
+<details>
+<summary>How to rename a bucket in S3?</summary><br><b>
+
+A S3 bucket name is immutable. That means it's not possible to change it, without removing and creating a new bucket.
+
+This is why the process for renaming a bucket is as follows:
+
+* Create a new bucket with the desired name
+* Move the data from the old bucket to it
+* Delete the old bucket
+
+With the AWS CLI that would be:
+
+```sh
+# Create new bucket
+aws s3 mb s3://[NEW_BUCKET_NAME]
+# Sync the content from the old bucket to the new bucket
+$ aws s3 sync s3://[OLD_BUCKET_NAME] s3://[NEW_BUCKET_NAME]
+# Remove old bucket
+$ aws s3 rb --force s3://[OLD_BUCKET_NAME]
+```
+</b></details>
+
+<details>
+<summary>True or False? The max object size a user can upload in one go, is 5TB</summary><br><b>
+
+True
+</b></details>
+
+<details>
+<summary>Explain "Multi-part upload"</summary><br><b>
+
+[Amazon docs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html): "Multipart upload allows you to upload a single object as a set of parts. Each part is a contiguous portion of the object's data...In general, when your object size reaches 100 MB, you should consider using multipart uploads instead of uploading the object in a single operation."
+</b></details>
+
+#### Objects
+
+<details>
+<summary>Explain "Object Versioning"</summary><br><b>
+
+When enabled at a bucket level, versioning allows you to upload new version of files, overriding previous version and so be able to easily roll-back and protect your data from being permanently deleted.
 </b></details>
 
 <details>
 <summary>Explain the following:
 
   - Object Lifecycles
-  - Object Sharing
-  - Object Versioning</summary><br><b>
+  - Object Sharing</summary><br><b>
 
   * Object Lifecycles - Transfer objects between storage classes based on defined rules of time periods
   * Object Sharing - Share objects via a URL link
-  * Object Versioning - Manage multiple versions of an object
 </b></details>
 
 <details>
@@ -1138,6 +1431,98 @@ An S3 bucket is a resource which is similar to folders in a file system and allo
 Object Durability: The percent over a one-year time period that a file will not be lost
 Object Availability: The percent over a one-year time period that a file will be accessible
 </b></details>
+
+#### S3 Security
+
+<details>
+<summary>True or False? Every new S3 bucket is public by default</summary><br><b>
+
+False. A newly created bucket is private unless it was configured to be public.
+</b></details>
+
+<details>
+<summary>What's a presigned URL?</summary><br><b>
+
+Since every newly created bucket is by default private it doesn't allows to share files with users. Even if the person who uploaded them tries to view them, it gets denied.
+
+A presigned URL is a way to bypass that and allow sharing the files with users by including the credentials (token) as part of the URL. It can be done for limited time.
+</b></details>
+
+<details>
+<summary>What security measures have you taken in context of S3?</summary><br><b>
+	* Don't make a bucket public.
+	* Enable encryption if it's disabled.
+    * Define an access policy
+</b></details>
+
+
+<details>
+<summary>What encryption types supported by S3?</summary><br><b>
+
+* SSE-S3
+* SSE-KMS
+* SSE-C
+</b></details>
+
+<details>
+<summary>Describe shortly how SSE-S3 (AES) encryption works</summary><br><b>
+
+1. You upload a file to S3 using HTTP (or HTTPS) and header
+2. S3 uses the managed data key to encrypt it
+3. S3 stores the encrypted object in the bucket
+</b></details>
+
+<details>
+<summary>True or False? In case of SSE-S3 (AES-256) encryption, you manage the key</summary><br><b>
+
+False. S3 manages the key and uses AES-256 algorithm for the encryption.
+</b></details>
+
+<details>
+<summary>Who or what manages the keys in the case of SSE-KMS encryption?</summary><br><b>
+
+The KMS service.
+</b></details>
+
+<details>
+<summary>Why would someone choose to use SSE-KMS instead of SSE-S3?</summary><br><b>
+
+SS3-KMS provides control over who has access to the keys and you can also enabled audit trail.
+</b></details>
+
+<details>
+<summary>True or False? In case of SSE-C encryption, both S3 and you manage the keys</summary><br><b>
+
+False. You manage the keys. It's customer provided keys.
+</b></details>
+
+<details>
+<summary>True or False? In case of SSE-C HTTPS must be used and encryption key must be provided in headers for every HTTP request</summary><br><b>
+
+True.
+</b></details>
+
+<details>
+<summary>Describe shortly how SSE-C encryption works</summary><br><b>
+
+1. User uploads a file to S3 using HTTPS while providing data key in the header
+2. AWS S3 performs the encryption using the provided data key and encrypted object is stored in the bucket
+
+If a user would like to get the object, the same data key would have to be provided.
+</b></details>
+
+<details>
+<summary>With which string an header starts?
+
+* x-zmz
+* x-amz
+* x-ama
+</summary><br><b>
+
+x-amz
+</b></details>
+
+#### Misc
 
 <details>
 <summary>What is a storage class? What storage classes are there?</summary><br><b>
@@ -1241,70 +1626,6 @@ Learn more [here](https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-accel
 	No. S3 support only statis hosts. On a static website, individual webpages include static content. They might also contain client-side scripts. By contrast, a dynamic website relies on server-side processing, including server-side scripts such as PHP, JSP, or ASP.NET. Amazon S3 does not support server-side scripting.
 </b></details>
 
-#### Buckets
-
-<details>
-<summary>True or False? A bucket name must be globally unique</summary><br><b>
-
-True
-</b></details>
-
-<details>
-<summary>How to rename a bucket in S3?</summary><br><b>
-
-A S3 bucket name is immutable. That means it's not possible to change it, without removing and creating a new bucket.
-
-This is why the process for renaming a bucket is as follows:
-
-* Create a new bucket with the desired name
-* Move the data from the old bucket to it
-* Delete the old bucket
-
-With the AWS CLI that would be:
-
-```sh
-# Create new bucket
-aws s3 mb s3://[NEW_BUCKET_NAME]
-# Sync the content from the old bucket to the new bucket
-$ aws s3 sync s3://[OLD_BUCKET_NAME] s3://[NEW_BUCKET_NAME]
-# Remove old bucket
-$ aws s3 rb --force s3://[OLD_BUCKET_NAME]
-```
-</b></details>
-
-#### Security
-
-<details>
-<summary>True or False? Every new S3 bucket is public by default</summary><br><b>
-
-False
-</b></details>
-
-<details>
-<summary>What security measures have you taken in context of S3?</summary><br><b>
-	* Don't make a bucket public.
-	* Enable encryption if it's disabled.
-    * Define an access policy
-</b></details>
-
-<details>
-<summary>True or False? In case of SSE-AES encryption, you manage the key</summary><br><b>
-
-False. S3 manages the key and uses AES-256 algorithm for the encryption.
-</b></details>
-
-<details>
-<summary>True or False? In case of SSE-C encryption, both S3 and you manage the keys</summary><br><b>
-
-False. You manage the keys. It's customer provided key.
-</b></details>
-
-<details>
-<summary>True or False? Traffic between a host an S3 (e.g. uploading a file) is encrypted using SSL/TLS</summary><br><b>
-
-True
-</b></details>
-
 ### Disaster Recovery
 
 <details>
@@ -1389,15 +1710,17 @@ True. AWS responsible for making sure ELB is operational and takes care of lifec
 </b></details>
 
 <details>
-<summary>Which load balancer would you use for services which use HTTP or HTTPS traffic?</summary><br><b>
-
-Application Load Balancer (ALB).
+<summary>What's a "listener" in regards to ELB?</summary><br><b>
 </b></details>
 
 <details>
-<summary>True or False? With ALB (Application Load Balancer) it's possible to do routing based on query string and/or headers</summary><br><b>
+<summary>What's a "target group" in regards to ELB?</summary><br><b>
+</b></details>
 
-True.
+<details>
+<summary>Which load balancer would you use for services which use HTTP or HTTPS traffic?</summary><br><b>
+
+Application Load Balancer (ALB).
 </b></details>
 
 <details>
@@ -1434,7 +1757,7 @@ For example, port `2017` and endpoint `/health`.
 
 <details>
 <summary>Which type of AWS load balancer is used in the following drawing?<br>
-<img src="images/aws/identify_load_balancer.png" width="300px;" height="400px;"/>
+<img src="../../images/aws/identify_load_balancer.png"/>
 </summary><br><b>
 
 Application Load Balancer (routing based on different endpoints + HTTP is used).
@@ -1520,12 +1843,6 @@ With cross zone load balancing, traffic distributed evenly across all (registere
 </b></details>
 
 <details>
-<summary>True or False? For application load balancer, cross zone load balancing is always on and can't be disabled</summary><br><b>
-
-True
-</b></details>
-
-<details>
 <summary>True or False? For network load balancer, cross zone load balancing is always on and can't be disabled </summary><br><b>
 
 False. It's disabled by default
@@ -1534,7 +1851,7 @@ False. It's disabled by default
 <details>
 <summary>True or False? In regards to cross zone load balancing, AWS charges you for inter AZ data in network load balancer but no in application load balancer</summary><br><b>
 
-False. It charges fir inter AZ data in network load balancer, but not in application load balancer
+False. It charges for inter AZ data in network load balancer, but not in application load balancer
 </b></details>
 
 <details>
@@ -1547,6 +1864,28 @@ True
 <summary>Explain Deregistration Delay (or Connection Draining) in regards to ELB</summary><br><b>
 
 The period of time or process of "draining" instances from requests/traffic (basically let it complete all active connections but don't start new ones) so it can be de-registered eventually and ELB won't send requests/traffic to it anymore.
+</b></details>
+
+#### NLB
+
+<details>
+<summary>At what network level/layer a Network Load Balancer operates?</summary><br><b>
+
+Layer 4
+</b></details>
+
+#### ALB
+
+<details>
+<summary>True or False? With ALB (Application Load Balancer) it's possible to do routing based on query string and/or headers</summary><br><b>
+
+True.
+</b></details>
+
+<details>
+<summary>True or False? For application load balancer, cross zone load balancing is always on and can't be disabled</summary><br><b>
+
+True
 </b></details>
 
 ### Auto Scaling Group
@@ -1604,12 +1943,12 @@ During a scaling cooldown, ASG will not terminate or launch additional instances
 <details>
 <summary>Explain the default ASG termination policy</summary><br><b>
 
-1. It finds the AZ which the most number of EC2 instnaces
+1. It finds the AZ which the most number of EC2 instances
 2. If number of instances > 1, choose the one with oldest launch configuration, template and terminate it
 </b></details>
 
 <details>
-<summary>True or False? by deafult, ASG tries to balance the number of instances across AZ</summary><br><b>
+<summary>True or False? by default, ASG tries to balance the number of instances across AZ</summary><br><b>
 
 True, this is why when it terminates instances, it chooses the AZ with the most instances.
 </b></details>
@@ -1624,6 +1963,14 @@ Lifecycle hooks allows you perform extra steps before the instance goes in servi
 <summary>If you use ASG and you would like to run extra steps before the instance goes in service, what will you use? </summary><br><b>
 
 Lifecycle hooks in pending state.
+</b></details>
+
+<details>
+<summary>Describe one way to test ASG actually works</summary><br><b>
+
+In Linux instances, you can install the 'stress' package and run stress to load the system for certain period of time and see if ASG kicks in by adding additional capacity (= more instances).
+
+For example: `sudo stress --cpu 100 --timeout 20`
 </b></details>
 
 ### Security
@@ -2073,176 +2420,6 @@ Learn more [here](https://aws.amazon.com/documentdb)
 EBS
 </b></details>
 
-### VPC
-
-<details>
-<summary>What is VPC?</summary><br><b>
-
-"A logically isolated section of the AWS cloud where you can launch AWS resources in a virtual network that you define"
-Read more about it [here](https://aws.amazon.com/vpc).
-</b></details>
-
-<details>
-<summary>True or False? By default, any new account has a default VPC</summary><br><b>
-
-True
-</b></details>
-
-<details>
-<summary>True or False? Default VPC doesn't have internet connectivity and any launched EC2 will only have a private IP assigned</summary><br><b>
-
-False. The default VPC has internet connectivity and any launched EC2 instance gets a public IPv4 address.
-
-In addition, any launched EC2 instance gets a public and private DNS names.
-</b></details>
-
-<details>
-<summary>True or False? VPC spans multiple regions</summary><br><b>
-
-False
-</b></details>
-
-<details>
-<summary>True or False? It's possible to have multiple VPCs in one region</summary><br><b>
-
-True. As of today, the soft limit is 5.
-</b></details>
-
-<details>
-<summary>True or False? Subnets belong to the same VPC, can be in different availability zones</summary><br><b>
-
-True. Just to clarify, a single subnet resides entirely in one AZ.
-</b></details>
-
-<details>
-<summary>You have noticed your VPC's subnets (which use x.x.x.x/20 CIDR) have 4096 available IP addresses although this CIDR should have 4096 addresses. What is the reason for that?</summary><br><b>
-
-AWS reserves 5 IP addresses in each subnet - first 4 and the last one, and so they aren't available for use.
-</b></details>
-
-<details>
-<summary>What AWS uses the 5 reserved IP addresses for?</summary><br><b>
-
-x.x.x.0 - network address
-x.x.x.1 - VPC router
-x.x.x.2 - DNS mapping
-x.x.x.3 - future use
-x.x.x.255 - broadcast address
-</b></details>
-
-<details>
-<summary>What is an Internet Gateway?</summary><br><b>
-
-[AWS Docs](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html): "component that allows communication between instances in your VPC and the internet"
-
-In addition it's good to know that IGW is:
-  * Highly available and redundant
-  * Not porivding internet access by its own (you need route tables to be edited)
-  * Created separately from VPC
-</b></details>
-
-<details>
-<summary>True or False? One or more VPCs can be attached to one Internet Gateway</summary><br><b>
-
-False. Only one VPC can be attached to one IGW and vice versa
-</b></details>
-
-<details>
-<summary>True or False? NACL allow or deny traffic on the subnet level</summary><br><b>
-
-True
-</b></details>
-
-<details>
-<summary>What is VPC peering?</summary><br><b>
-
-[docs.aws](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html): "A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses."
-</b></details>
-
-<details>
-<summary>True or False? Multiple Internet Gateways can be attached to one VPC</summary><br><b>
-
-False. Only one internet gateway can be attached to a single VPC.
-</b></details>
-
-<details>
-<summary>You've restarted your EC2 instance and the public IP has changed. How would you deal with it so it won't happen?</summary><br><b>
-
-Use Elastic IP which provides you a fixed IP address.
-</b></details>
-
-<details>
-<summary>When creating a new VPC, there is an option called "Tenancy". What is it used for?</summary><br><b>
-</b></details>
-
-<details>
-<summary>What is an Elastic IP address?</summary><br><b>
-
-[AWS Docs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html): "An Elastic IP address is a static IPv4 address designed for dynamic cloud computing. An Elastic IP address is allocated to your AWS account, and is yours until you release it. By using an Elastic IP address, you can mask the failure of an instance or software by rapidly remapping the address to another instance in your account."
-</b></details>
-
-<details>
-<summary>Why would you use an Elastic IP address?</summary><br><b>
-
-Let's say you have an instance that you need to shutdown or perform some maintenance on. In that case, what you would want to do is to move the Elastic IP address to another instance that is operational, until you finish to perform the maintenance and then you can move it back to the original instance (or keep it assigned to the second one).
-</b></details>
-
-<details>
-<summary>True or False? When stopping and starting an EC2 instance, its public IP changes</summary><br><b>
-
-True
-</b></details>
-
-<details>
-<summary>What are the best practices around Elastic IP?</summary><br><b>
-
-The best practice is actually not using them in the first place. It's more common to use a load balancer without a public IP or use a random public IP and register a DNS record to it
-</b></details>
-
-<details>
-<summary>True or False? An Elastic IP is free, as long it's not associated with an EC2 instance</summary><br><b>
-
-False. An Elastic IP is free of charge as long as **it is ** associated with an EC2 instance. This instance should be running and should have only one Elastic IP.
-</b></details>
-
-<details>
-<summary>True or False? Route Tables used to allow or deny traffic from the internet to AWS instances</summary><br><b>
-
-False.
-</b></details>
-
-<details>
-<summary>Explain Security Groups and Network ACLs</summary><br><b>
-
-* NACL - security layer on the subnet level.
-* Security Group - security layer on the instance level.
-
-Read more about it [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html) and [here](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
-</b></details>
-
-<details>
-<summary>What is AWS Direct Connect?</summary><br><b>
-
-Allows you to connect your corporate network to AWS network.
-</b></details>
-
-<details>
-<summary>What would you use if you need a fixed public IP for your EC2 instance?</summary><br><b>
-
-Elastic IP
-</b></details>
-
-<details>
-<summary>Kratos, your colleague, decided to use a subnet of /27 because he needs 29 IP addresses for EC2 instances. Is Kratos right?</summary><br><b>
-
-No. Since AWS reserves 5 IP addresses for every subnet, Kratos will have 32-5=27 addresses and this is less than what he needs (29).
-
-It's better if Kratos uses a subnet of size /26 but good luck telling him that.
-</b></details>
-
-<details>
-<summary>In order for AWS Lambda to have internet access</summary><br><b>
-</b></details>
 
 ### Identify the Service
 
@@ -2415,6 +2592,12 @@ AWS Cognito
 </b></details>
 
 <details>
+<summary>Which service is often reffered to as "used for decoupling applications"?</summary><br><b>
+
+AWS SQS. Since it's a messaging queue so it allows applications to switch from synchronous communication to asynchronous one.
+</b></details>
+
+<details>
 <summary>Which service would you use if you need messaging queue?</summary><br><b>
 
 Simple Queue Service (SQS)
@@ -2449,6 +2632,18 @@ API Gateway - to define the URL trigger (= when you insert the URL, the function
 <summary>Which service would you use for data or events streaming?</summary><br><b>
 
 Kinesis
+</b></details>
+
+<details>
+<summary>Which (free) tool would you use to get information on cost savings?</summary><br><b>
+
+Trusted Advisor
+</b></details>
+
+<details>
+<summary>You would like to have on-perm storage access to AWS storage. What would you use for that?</summary><br><b>
+
+Storage Gateway
 </b></details>
 
 ### DNS (Route 53)
@@ -2683,23 +2878,100 @@ False. Route 53 Multi Value is not a substitute for ELB. It's focused on client-
 False. DNS service can be Route 53 (where you manage DNS records) while the domain itself can be purchased from other sources that aren't Amazon related (e.g. GoDadday).
 </b></details>
 
-### Monitoring and Logging
+### SQS
 
 <details>
-<summary>What is AWS CloudWatch?</summary><br><b>
+<summary>What is Simple Queue Service (SQS)?</summary><br><b>
 
-AWS definition: "Amazon CloudWatch is a monitoring and observability service..."
+AWS definition: "Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications".
 
-More on CloudWatch [here](https://aws.amazon.com/cloudwatch)
+Learn more about it [here](https://aws.amazon.com/sqs)
 </b></details>
 
 <details>
-<summary>What is AWS CloudTrail?</summary><br><b>
+<summary>Explain "producer" and "consumer" in regards to messaging queue</summary><br><b>
 
-AWS definition: "AWS CloudTrail is a service that enables governance, compliance, operational auditing, and risk auditing of your AWS account."
+Producer is the application or in general, the source that sends messages to the queue.
 
-Read more on CloudTrail [here](https://aws.amazon.com/cloudtrail)
+Consumer is the process or application that pulls the messages from the queue.
 </b></details>
+
+<details>
+<summary>What "default retention of messages" means?</summary><br><b>
+
+It refers to a retention period in which a message has to consumed/processed and deleted from the queue.
+
+As of today, the retention of a message is 4 days by default and the maximum allows is 14 days.
+</b></details>
+
+<details>
+<summary>What's the limitation on message size in SQS?
+
+* 128KB
+* 128MB
+* 256KB
+* 256MB</summary><br><b>
+
+256KB
+</b></details>
+
+<details>
+<summary>True or False? It's possible to have duplicated messages in the queue</summary><br><b>
+
+True. It's referred to as "at least once delivery".
+</b></details>
+
+<details>
+<summary>True or False? "Consumers" can be only EC2 instances</summary><br><b>
+
+False. They can be Lambda functions and even on-premise instances
+</b></details>
+
+<details>
+<summary>True or False? Processes/Applications use from the SDK the SendMessage API in order to send messages to the queue</summary><br><b>
+
+True.
+</b></details>
+
+<details>
+<summary>What it means "best effort ordering" in regards to SQS?</summary><br><b>
+
+It means messages in the queue can be out of order.
+</b></details>
+
+<details>
+<summary>What is "Delay Queue" in regards to SQS?</summary><br><b>
+
+It's the time in seconds to delay the delivery of new messages (when they reached the queue already).
+
+The limit as of today is 15 minutes.
+</b></details>
+
+<details>
+<summary>What is "Visibility Timeout?"</summary><br><b>
+
+The time in seconds for a message to not be visible for consumers.
+
+The limit as of today is 12 hours
+</b></details>
+
+<details>
+<summary>Give an example of architecture or workflow that involves SQS and EC2 & S3</summary><br><b>
+
+A website that allows users to upload videos and adds subtitles to them:
+
+1. First the user uploads the video through the web interface which uploads it to an S3 bucket
+2. SQS gets notified with a message on the video location
+3. EC2 instance (or Lambda function) starts to work on adding the subtitles
+4. The video with the subtitles is uploaded to an S3 buckets
+5. SQS gets notified of the result and specifically the video location
+</b></details>
+
+<details>
+<summary>What's MessageGroupID?</summary><br><b>
+</b></details>
+
+### SNS
 
 <details>
 <summary>What is Simply Notification Service?</summary><br><b>
@@ -2721,14 +2993,39 @@ Read more about it [here](https://aws.amazon.com/sns)
   * Publishers - the provider of the message (event, person, ...)
 </b></details>
 
-### Billing and Support
+<details>
+<summary>How SNS is different from SQS?</summary><br><b>
+
+SNS, as opposed to SQS, works in a publisher/subscriber model. Where's SQS works in  Producer/Consumer model.
+
+SQS delivers the message to one consumer where's SNS will send a message to multiple subscribers.
+</b></details>
 
 <details>
-<summary>What is "AWS Organizations"?</summary><br><b>
+<summary>What's a Fan-Out pattern?</summary><br><b>
 
-AWS definition: "AWS Organizations helps you centrally govern your environment as you grow and scale your workloads on AWS."
-More on Organizations [here](https://aws.amazon.com/organizations)
+A messaging pattern where a single message is send to multiple destinations (often simultaneously). So one-to-many broadcast message.
 </b></details>
+
+### Monitoring and Logging
+
+<details>
+<summary>What is AWS CloudWatch?</summary><br><b>
+
+AWS definition: "Amazon CloudWatch is a monitoring and observability service..."
+
+More on CloudWatch [here](https://aws.amazon.com/cloudwatch)
+</b></details>
+
+<details>
+<summary>What is AWS CloudTrail?</summary><br><b>
+
+AWS definition: "AWS CloudTrail is a service that enables governance, compliance, operational auditing, and risk auditing of your AWS account."
+
+Read more on CloudTrail [here](https://aws.amazon.com/cloudtrail)
+</b></details>
+
+### Billing and Support
 
 <details>
 <summary>What are Service Control Policies and to what service they belong?</summary><br><b>
@@ -2813,7 +3110,25 @@ True. You pay differently based on the chosen region.
 
 AWS Definition: "AWS Infrastructure Event Management is a structured program available to Enterprise Support customers (and Business Support customers for an additional fee) that helps you plan for large-scale events such as product or application launches, infrastructure migrations, and marketing events."
 </b></details>
+#### AWS Organizations
 
+<details>
+<summary>What is "AWS Organizations"?</summary><br><b>
+
+AWS definition: "AWS Organizations helps you centrally govern your environment as you grow and scale your workloads on AWS."
+
+Read more on Organizations [here](https://aws.amazon.com/organizations)
+</b></details>
+
+<details>
+<summary>What's an OU in regards to AWS Organizations?'</summary><br><b>
+
+OU (Organizational Units) is a way to group multiple accounts together so you can treat them as a single unit.
+
+By default there is the "Root" OU created in AWS Organizations.
+
+Most of the time OUs are based on functions or common set of controls. 
+</b></details>
 ### Automation
 
 <details>
@@ -2826,6 +3141,16 @@ Learn more [here](https://aws.amazon.com/codedeploy)
 
 <details>
 <summary>Explain what is CloudFormation</summary><br><b>
+
+AWS definition: "AWS CloudFormation is a service that helps you model and set up your Amazon Web Services resources so that you can spend less time managing those resources and more time focusing on your applications that run in AWS. You create a template that describes all the AWS resources that you want (like Amazon EC2 instances or Amazon RDS DB instances), and CloudFormation takes care of provisioning and configuring those resources for you."
+</b></details>
+
+<details>
+<summary>What is AWS CDK?</summary><br><b>
+
+AWS definition: "The AWS Cloud Development Kit (AWS CDK) is an open-source software development framework to define cloud infrastructure as code and provision it through AWS CloudFormation. CDK gives the flexibility to use popular programming languages like TypeScript, JavaScript, Python, Java, C# and Go (in Developer Preview) to define your infrastructure, and AWS CDK provides a set of libraries for AWS services that abstract away the need to write raw CloudFormation templates.
+
+Learn more [here](https://aws.amazon.com/cdk)
 </b></details>
 
 ### Misc
@@ -3007,14 +3332,6 @@ AWS Lambda
 AWS Athena
 </b></details>
 
-<details>
-<summary>What is Simple Queue Service (SQS)?</summary><br><b>
-
-AWS definition: "Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications".
-
-Learn more about it [here](https://aws.amazon.com/sqs)
-</b></details>
-
 ### High Availability
 
 <details>
@@ -3132,6 +3449,12 @@ Use Amazon EventBridge so every time a file is uploaded to an S3 bucket (event) 
 Such task should have an ECS Task Role so it can get the object from the S3 bucket (and possibly other permissions if it needs to update the DB for example).
 </b></details>
 
+<details>
+<summary>Your hosts scale down and then back up quite often. What's your take on that? </summary><br><b>
+
+Often circular scaling (scale down, up and vice versa) is not a sign that the threshold set for scaling down and up are met quite often. In most cases that's a sign for you to adjust the threshold so scaling down doesn't happen as often.
+</b></details>
+
 ### Architecture Design
 
 <details>
@@ -3144,4 +3467,22 @@ Network Load Balancer
 <summary>What should you use for scaling reads?</summary><br><b>
 
 You can use an ElastiCache cluster or RDS Read Replicas.
+</b></details>
+
+<details>
+<summary>You have two applications who communicate synchronously. It worked fine until there suddenly a spike of traffic. What change you might apply in this case?</summary><br><b>
+
+More details are missing to determine for sure but it might be better to decouple the applications by introducing one of the following:
+
+* Queue model with SQS
+* Publisher/Subscriber model with SNS
+</b></details>
+
+### Misc
+
+<details>
+<summary>What's an ARN?</summary><br><b>
+
+ARN (Amazon Resources Names) used for uniquely identifying different AWS resources.
+It is used when you would like to identify resource uniqely across all AWS infra.
 </b></details>
